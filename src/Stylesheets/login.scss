@@ -4,5 +4,15 @@
   background-position: center;
   background-repeat: no-repeat;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .logo{
+    width: 100px;
+    margin-top: 8vh;
+  }
+  .form-jumbo {
+    width: 700px;
+  }
 }
 
