@@ -1,5 +1,5 @@
-.login-main {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../Images/IMG_5826.JPG");
+.register-main {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -7,8 +7,8 @@
   display: flex;
   flex-direction: column;
   align-items: center; }
-  .login-main .logo {
+  .register-main .logo {
     width: 100px;
     margin-top: 8vh; }
-  .login-main .form-jumbo {
+  .register-main .form-jumbo {
     width: 700px; }

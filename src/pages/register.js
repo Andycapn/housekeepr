@@ -1,25 +1,19 @@
 import React, { useRef, useState, useEffect } from "react";
 import { PageLayout, Title, BodyText } from "../components/styledelements";
-import "../Stylesheets/login.css";
+import "../Stylesheets/register.css";
 import { Jumbotron, Form } from "react-bootstrap";
 import { Button, Callout } from "@blueprintjs/core";
-import Logo from "../Images/icons/cleaning.svg";
+import { validationSchema } from "../components/validation";
 import axios from "axios";
+import { Formik, Field } from "formik";
 import { Redirect } from "react-router";
 
-const Login = () => {
-  const [registerState, setRegisterState] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    password: "",
-    privilege: "",
-    errorMsg: "",
-    response: "",
-    auth: "",
-  });
+const errorStyling = {
+  marginBottom: "20px",
+  marginTop: "20px",
+};
 
+const Register = () => {
   // URI Encode data
   const encode = (data) => {
     return Object.keys(data)
@@ -29,97 +23,169 @@ const Login = () => {
       .join("&");
   };
 
-  //On Change Handler for Form State
-  const handleChange = (e) => {
-    setLoginState({
-      ...loginState,
-      [e.target.name]: e.target.value,
-    });
+  // Initial Values for form
+  const initialValues = {
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
   };
 
-  // Handle form submission
-  const HandleSubmit = (e) => {
-    // Check If fields are empty
-    if (loginState.email === "" || loginState.password === "") {
-      setLoginState({
-        ...loginState,
-        errorMsg: "All fields are required",
-      });
-      e.preventDefault();
-      return;
-    } else if (loginState.email !== "" && loginState.password !== "") {
-      // Remove Error Message when form is filled
-      setLoginState({ ...loginState, errors: "" });
-    }
+  let responseData = {
+    data: {
+      auth: "",
+      errorMsg: "",
+    },
+  };
+
+  // Submission Handler
+  const handleSubmit = (data) => {
+    console.log(data);
     axios
-      .post("http://localhost:3000/auth/login", encode({ ...loginState }), {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      })
+      .post("http://localhost:3000/auth/login", encode(data))
       .then((response) => {
-        setLoginState({
-          ...loginState,
-          ...response.data,
-        });
-      })
-      .catch((error) => alert(error.value));
-    e.preventDefault();
+        responseData = { ...response };
+      });
   };
-
-  if (loginState.auth === "true") {
-    return <Redirect to={"/Login"} />;
-  }
 
   return (
-    <PageLayout className={`login-main`}>
-      <img src={Logo} className="logo" alt="" />
-      <Title style={{ color: "white", textAlign: "center" }}>HouseKeepr</Title>
+    <PageLayout className={`register-main`}>
       <BodyText style={{ color: "white", textAlign: "center" }}>
-        Chaminuka Lodge
+        Register User
       </BodyText>
-      <BodyText style={{ color: "white", textAlign: "center" }}>Login</BodyText>
       <Jumbotron className={`form-jumbo`}>
-        <Form>
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Enter email"
-              id="email"
-              name="email"
-              onChange={handleChange}
-            />
-          </Form.Group>
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              id="password"
-              name="password"
-              onChange={handleChange}
-            />
-          </Form.Group>
-          {loginState.errorMsg !== "" ? (
-            <Callout style={{ marginBottom: "20px" }} intent="danger">
-              {loginState.errorMsg}
-            </Callout>
-          ) : null}
-          <Button
-            intent="primary"
-            outlined
-            minimal
-            fill
-            type="submit"
-            className="submit-btn"
-            onClick={(e) => HandleSubmit(e)}
-            rightIcon={`log-in`}
-          >
-            Log in
-          </Button>
-        </Form>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={validationSchema}
+        >
+          {({
+            values,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            errors,
+            touched,
+          }) => (
+            <Form onSubmit={handleSubmit}>
+              <pre style={{ marginBottom: "20px" }}>
+                {JSON.stringify(responseData.data)}
+              </pre>
+              <Form.Group controlId="first_name">
+                <Form.Label>First Name</Form.Label>
+                <Field
+                  type="input"
+                  name="first_name"
+                  placeholder="Enter First Name"
+                  as={Form.Control}
+                />
+                {errors.first_name !== undefined &&
+                errors.first_name !== "" &&
+                touched.first_name ? (
+                  <Callout style={errorStyling} intent="warning">
+                    {errors.first_name}
+                  </Callout>
+                ) : null}
+              </Form.Group>
+              <Form.Group controlId="last_name">
+                <Form.Label>First Name</Form.Label>
+                <Field
+                  type="input"
+                  name="last_name"
+                  placeholder="Enter Last Name"
+                  as={Form.Control}
+                />
+                {errors.last_name !== undefined &&
+                errors.last_name !== "" &&
+                touched.last_name ? (
+                  <Callout style={errorStyling} intent="warning">
+                    {errors.last_name}
+                  </Callout>
+                ) : null}
+              </Form.Group>
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>Email address</Form.Label>
+                <Field
+                  type="email"
+                  placeholder="Enter email"
+                  name="email"
+                  as={Form.Control}
+                />
+                {errors.email !== undefined &&
+                errors.email !== "" &&
+                touched.email ? (
+                  <Callout style={errorStyling} intent="warning">
+                    {errors.email}
+                  </Callout>
+                ) : null}
+              </Form.Group>
+              <Form.Group controlId="Phone">
+                <Form.Label>Phone Number</Form.Label>
+                <Field
+                  type="text"
+                  placeholder="Enter phone number"
+                  name="phone"
+                  as={Form.Control}
+                />
+                {errors.phone !== undefined &&
+                errors.phone !== "" &&
+                touched.phone ? (
+                  <Callout style={errorStyling} intent="warning">
+                    {errors.phone}
+                  </Callout>
+                ) : null}
+              </Form.Group>
+              <Form.Group controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Field
+                  type="password"
+                  placeholder="Enter A New Password"
+                  name="password"
+                  as={Form.Control}
+                />
+                {errors.password !== undefined &&
+                errors.password !== "" &&
+                touched.password ? (
+                  <Callout style={errorStyling} intent="warning">
+                    {errors.password}
+                  </Callout>
+                ) : null}
+              </Form.Group>
+              <Form.Group controlId="confirmPassword">
+                <Form.Label>Confirm Password</Form.Label>
+                <Field
+                  type="password"
+                  placeholder="Confirm new password"
+                  name="confirmPassword"
+                  as={Form.Control}
+                />
+                {errors.confirmPassword !== undefined &&
+                errors.confirmPassword !== "" &&
+                touched.confirmPassword ? (
+                  <Callout style={errorStyling} intent="warning">
+                    {errors.confirmPassword}
+                  </Callout>
+                ) : null}
+              </Form.Group>
+              <Button
+                intent="primary"
+                outlined
+                minimal
+                fill
+                type="submit"
+                className="submit-btn"
+                rightIcon={`add`}
+              >
+                Add User
+              </Button>
+            </Form>
+          )}
+        </Formik>
       </Jumbotron>
     </PageLayout>
   );
 };
 
-export default Login;
+export default Register;

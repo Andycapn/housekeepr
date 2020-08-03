@@ -6,14 +6,9 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-.login-main .logo {
-  width: 100px;
-  margin-top: 8vh;
-}
-.login-main .form-jumbo {
-  width: 700px;
-}
-
-/*# sourceMappingURL=login.css.map */
+  align-items: center; }
+  .login-main .logo {
+    width: 100px;
+    margin-top: 8vh; }
+  .login-main .form-jumbo {
+    width: 700px; }

@@ -1,21 +1,72 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { PageLayout, Title, BodyText } from "../components/styledelements";
 import "../Stylesheets/login.css";
 import { Jumbotron, Form } from "react-bootstrap";
 import { Button, Callout } from "@blueprintjs/core";
 import Logo from "../Images/icons/cleaning.svg";
+import axios from "axios";
+import { Redirect } from "react-router";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [loginState, setLoginState] = useState({
+    email: "",
+    password: "",
+    errorMsg: "",
+    response: "",
+    auth: "",
+  });
 
-  const submitForm = (e) => {
-    e.preventDefault();
-    if (email === "" || password === "") {
-      setError("All fields are required");
-    }
+  let errorBox = useRef(null);
+
+  // URI Encode data
+  const encode = (data) => {
+    return Object.keys(data)
+      .map(
+        (key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
+      )
+      .join("&");
   };
+
+  //On Change Handler for Form State
+  const handleChange = (e) => {
+    setLoginState({
+      ...loginState,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Handle form submission
+  const HandleSubmit = (e) => {
+    // Check If fields are empty
+    if (loginState.email === "" || loginState.password === "") {
+      setLoginState({
+        ...loginState,
+        errorMsg: "All fields are required",
+      });
+      e.preventDefault();
+      return;
+    } else if (loginState.email !== "" && loginState.password !== "") {
+      // Remove Error Message when form is filled
+      setLoginState({ ...loginState, errors: "" });
+    }
+    axios
+      .post("http://127.0.0.1:3000/auth/login", encode({ ...loginState }), {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      })
+      .then((response) => {
+        setLoginState({
+          ...loginState,
+          ...response.data,
+        });
+      })
+      .catch((error) => alert(error.value));
+    e.preventDefault();
+  };
+
+  if (loginState.auth === "true") {
+    return <Redirect to={"/Login"} />;
+  }
+
   return (
     <PageLayout className={`login-main`}>
       <img src={Logo} className="logo" alt="" />
@@ -31,7 +82,9 @@ const Login = () => {
             <Form.Control
               type="email"
               placeholder="Enter email"
-              onChange={(e) => setEmail(e.target.value)}
+              id="email"
+              name="email"
+              onChange={handleChange}
             />
           </Form.Group>
           <Form.Group controlId="formBasicPassword">
@@ -39,12 +92,14 @@ const Login = () => {
             <Form.Control
               type="password"
               placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
+              id="password"
+              name="password"
+              onChange={handleChange}
             />
           </Form.Group>
-          {error !== "" ? (
+          {loginState.errorMsg !== "" ? (
             <Callout style={{ marginBottom: "20px" }} intent="danger">
-              {error}
+              {loginState.errorMsg}
             </Callout>
           ) : null}
           <Button
@@ -54,7 +109,7 @@ const Login = () => {
             fill
             type="submit"
             className="submit-btn"
-            onClick={(e) => submitForm(e)}
+            onClick={(e) => HandleSubmit(e)}
             rightIcon={`log-in`}
           >
             Log in
