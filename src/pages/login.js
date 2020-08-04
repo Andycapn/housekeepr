@@ -50,9 +50,13 @@ const Login = () => {
       setLoginState({ ...loginState, errors: "" });
     }
     axios
-      .post("http://127.0.0.1:3000/auth/login", encode({ ...loginState }), {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      })
+      .post(
+        "http://34.105.250.255:3000/auth/login",
+        encode({ ...loginState }),
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        }
+      )
       .then((response) => {
         setLoginState({
           ...loginState,
@@ -64,7 +68,7 @@ const Login = () => {
   };
 
   if (loginState.auth === "true") {
-    return <Redirect to={"/Login"} />;
+    return <Redirect to={"/"} />;
   }
 
   return (

@@ -41,12 +41,22 @@ const Register = () => {
   };
 
   // Submission Handler
-  const handleSubmit = (data) => {
+  const handleSubmit = async (
+    data,
+    { setErrors, setSubmitting, setValues }
+  ) => {
     console.log(data);
+    setSubmitting(true);
     axios
-      .post("http://localhost:3000/auth/login", encode(data))
+      .post("http://34.105.250.255:3000/auth/register", encode(data))
       .then((response) => {
         responseData = { ...response };
+        if (responseData.data.errorMsg && responseData.data.errorMsg !== "") {
+          setErrors({ backendError: responseData.data.errorMsg });
+        }
+        if (responseData.data.message) {
+          setValues({ ...data, response: responseData.data.message });
+        }
       });
   };
 
@@ -68,11 +78,24 @@ const Register = () => {
             handleSubmit,
             errors,
             touched,
+            isSubmitting,
           }) => (
             <Form onSubmit={handleSubmit}>
+              {}
               <pre style={{ marginBottom: "20px" }}>
-                {JSON.stringify(responseData.data)}
+                {JSON.stringify(values)}
               </pre>
+              {errors.backendError !== undefined &&
+              errors.backendError !== "" ? (
+                <Callout style={errorStyling} intent="danger">
+                  {errors.backendError}
+                </Callout>
+              ) : null}
+              {values.response !== undefined && values.response !== "" ? (
+                <Callout style={errorStyling} intent="success">
+                  {values.response}
+                </Callout>
+              ) : null}
               <Form.Group controlId="first_name">
                 <Form.Label>First Name</Form.Label>
                 <Field
@@ -177,6 +200,7 @@ const Register = () => {
                 type="submit"
                 className="submit-btn"
                 rightIcon={`add`}
+                disabled={isSubmitting}
               >
                 Add User
               </Button>
