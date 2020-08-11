@@ -1,8 +1,8 @@
 module.exports = function (api) {
-  api.cache(true)
+  api.cache(true);
 
-  const plugins = ["emotion"]
-  const presets = ["next/babel"]
+  const plugins = ["emotion"];
+  const presets = ["next/babel"];
 
-  return { plugins, presets }
-}
+  return { plugins, presets };
+};

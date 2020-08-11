@@ -21,9 +21,7 @@ const Login = () => {
   // URI Encode data
   const encode = (data) => {
     return Object.keys(data)
-      .map(
-        (key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
-      )
+      .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
       .join("&");
   };
 
@@ -50,46 +48,41 @@ const Login = () => {
       setLoginState({ ...loginState, errors: "" });
     }
     axios
-      .post(
-        "http://34.105.250.255:3000/auth/login",
-        encode({ ...loginState }),
-        {
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        }
-      )
+      .post("http://localhost:3000/auth/login", encode({ ...loginState }), {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        withCredentials: true,
+      })
       .then((response) => {
         setLoginState({
           ...loginState,
           ...response.data,
         });
       })
-      .catch((error) => alert(error.value));
+      .catch((error) => {
+        if (error) {
+          setLoginState({
+            ...error.response.data,
+          });
+        }
+      });
     e.preventDefault();
   };
 
   if (loginState.auth === "true") {
-    return <Redirect to={"/"} />;
+    return <Redirect to={"/dashboard"} />;
   }
 
   return (
     <PageLayout className={`login-main`}>
       <img src={Logo} className="logo" alt="" />
       <Title style={{ color: "white", textAlign: "center" }}>HouseKeepr</Title>
-      <BodyText style={{ color: "white", textAlign: "center" }}>
-        Chaminuka Lodge
-      </BodyText>
+      <BodyText style={{ color: "white", textAlign: "center" }}>Chaminuka Lodge</BodyText>
       <BodyText style={{ color: "white", textAlign: "center" }}>Login</BodyText>
       <Jumbotron className={`form-jumbo`}>
         <Form>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Enter email"
-              id="email"
-              name="email"
-              onChange={handleChange}
-            />
+            <Form.Control type="email" placeholder="Enter email" id="email" name="email" onChange={handleChange} />
           </Form.Group>
           <Form.Group controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
