@@ -6,9 +6,10 @@ import Context from "../store/context";
 import { useCookies } from "react-cookie";
 
 const MainDiv = styled.main`
+  position: relative;
   margin-top: 50px;
   margin-left: 220px;
-  position: relative;
+  min-width: 770px;
 `;
 
 // URI Encode data
@@ -21,7 +22,6 @@ const encode = (data) => {
 const getUserData = async (token, state, setState) => {
   const userData = await axios.post("http://localhost:3000/auth/", encode({ token: token }));
   setState({ ...state, ...userData.data });
-  console.log("hi");
 };
 
 // @ts-ignore

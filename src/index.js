@@ -6,8 +6,6 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../node_modules/@blueprintjs/core/lib/css/blueprint.css";
 import "../node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css";
 import { CookiesProvider } from "react-cookie";
-import Context from "./store/context";
-import useGlobalState from "./store/useGlobalState";
 
 render(
   <CookiesProvider>
