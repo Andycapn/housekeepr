@@ -8,7 +8,7 @@ import { Formik, Field } from "formik";
 import { validationSchema } from "../components/validation";
 import axios from "axios";
 import styled from "@emotion/styled";
-import { Card, Button } from "@blueprintjs/core";
+import { Card, Button, Callout } from "@blueprintjs/core";
 
 const FormLabel = styled(Form.Label)`
   font-weight: bold;
@@ -67,6 +67,11 @@ function Dashboard() {
               <Card>
                 <h1>Details</h1>
                 <hr />
+                {state.privilege === "standard" ? (
+                  <Callout intent="warning" style={{ marginBottom: "20px" }}>
+                    You Need Admin Authorization to edit First and Last names
+                  </Callout>
+                ) : null}
                 <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
                   {({ values, handleChange, handleBlur, handleSubmit, errors, touched, dirty }) => (
                     <Form>
@@ -83,10 +88,22 @@ function Dashboard() {
                       <FormGroup>
                         <Row>
                           <Col>
-                            <Field type="input" value={values.first_name} name="first_name" as={FormControl} />
+                            <Field
+                              type="input"
+                              value={values.first_name}
+                              name="first_name"
+                              as={FormControl}
+                              disabled={state.privilege !== "admin" ? true : false}
+                            />
                           </Col>
                           <Col>
-                            <Field type="input" value={values.last_name} name="last_name" as={FormControl} />
+                            <Field
+                              type="input"
+                              value={values.last_name}
+                              name="last_name"
+                              as={FormControl}
+                              disabled={state.privilege !== "admin" ? true : false}
+                            />
                           </Col>
                         </Row>
                       </FormGroup>
@@ -111,47 +128,61 @@ function Dashboard() {
               <Card>
                 <h1>Password</h1>
                 <hr />
+
                 <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-                  {({ values, handleChange, handleBlur, handleSubmit, errors, touched }) => (
+                  {({ values, handleChange, handleBlur, handleSubmit, errors, touched, dirty }) => (
                     <Form>
                       <FormGroup>
                         <FormLabel>Password</FormLabel>
                         <Field
                           type="password"
-                          name="currentPassword"
+                          name="newPassword"
                           value={userPageState.passwordIsEditing ? "" : "*********"}
                           placeholder={userPageState.passwordIsEditing ? "Enter your old password" : ""}
                           as={FormControl}
                           disabled={!userPageState.passwordIsEditing}
                         />
                       </FormGroup>
-                      {userPageState.passwordIsEditing ? (
-                        <>
-                          <FormGroup>
-                            <FormLabel>New Password</FormLabel>
-                            <Field
-                              type="password"
-                              name="newPassword"
-                              placeholder="Enter a new password"
-                              as={FormControl}
-                            />
-                          </FormGroup>
-                          <Button type="submit" icon="saved" style={{ marginRight: " 5px" }}>
-                            Save Changes
-                          </Button>
-                          <Button
-                            onClick={(e) => {
-                              setUserPageState({ passwordIsEditing: false });
-                            }}
-                            icon="cross"
-                            style={{ marginRight: " 5px" }}
-                          >
-                            Cancel
-                          </Button>
-                        </>
-                      ) : null}
+                      {
+                        // Display Additional Fields if user is editing password
+                        userPageState.passwordIsEditing ? (
+                          <>
+                            <FormGroup>
+                              <FormLabel>New Password</FormLabel>
+                              <Field
+                                type="password"
+                                name="newPassword"
+                                placeholder="Enter a new password"
+                                as={FormControl}
+                              />
+                            </FormGroup>
+                            <Button type="submit" icon="saved" style={{ marginRight: " 5px" }} disabled={!dirty}>
+                              Save Changes
+                            </Button>
+                            <Button
+                              onClick={(e) => {
+                                setUserPageState({ passwordIsEditing: false });
+                              }}
+                              icon="cross"
+                              intent="danger"
+                              minimal
+                              outlined
+                              style={{ marginRight: " 5px" }}
+                            >
+                              Cancel
+                            </Button>
+                          </>
+                        ) : null
+                      }
                       {!userPageState.passwordIsEditing ? (
-                        <Button onClick={(e) => setUserPageState({ passwordIsEditing: true })}>Edit</Button>
+                        <Button
+                          onClick={(e) => setUserPageState({ passwordIsEditing: true })}
+                          intent="primary"
+                          minimal
+                          outlined
+                        >
+                          Edit
+                        </Button>
                       ) : null}
                     </Form>
                   )}

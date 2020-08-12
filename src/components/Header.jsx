@@ -23,16 +23,10 @@ const Sidebar = styled.div`
 
 const SidebarLink = styled(Link)`
   width: 100%;
-
   font-weight: bold;
   transition: 200ms ease-in;
-  padding: 15px 0 15px 50px;
+  padding: 15px 0 15px 25px;
   &:hover {
-    border-left: 5px solid #41b7fc;
-    background-color: #d2d2d2;
-    text-decoration: none;
-  }
-  &.active-style {
     border-left: 5px solid #41b7fc;
     background-color: #d2d2d2;
     text-decoration: none;
@@ -49,12 +43,11 @@ const Header = () => {
       <Navbar fixedToTop style={{ paddingLeft: "230px" }}>
         <Navbar.Group>
           <Link to="/dashboard">
-            <Button href="/dashboard" icon="home" minimal>
+            <Button href="/dashboard" icon="home" minimal style={{ transition: "200ms ease-in" }}>
               Dashboard
             </Button>
           </Link>
         </Navbar.Group>
-
         <Navbar.Group align={Alignment.RIGHT}>
           <Link to="/user">
             <Button intent="primary" minimal rightIcon="user">
@@ -86,18 +79,20 @@ const Header = () => {
           </span>
           New Inspection
         </SidebarLink>
-        <SidebarLink href="" intent="primary" icon="user" minimal>
+        <SidebarLink to="/inspections" intent="primary" icon="user" minimal>
           <span style={{ marginRight: "5px" }}>
             <Icon icon="history" />
           </span>
           Inspections
         </SidebarLink>
-        <SidebarLink to="/add-user" intent="primary" icon="user" minimal>
-          <span style={{ marginRight: "5px" }}>
-            <Icon icon="user" />
-          </span>
-          Add User
-        </SidebarLink>
+        {state.privilege === "admin" ? (
+          <SidebarLink to="/add-user" intent="primary" icon="user" minimal>
+            <span style={{ marginRight: "5px" }}>
+              <Icon icon="user" />
+            </span>
+            Add User
+          </SidebarLink>
+        ) : null}
       </Sidebar>
     </div>
   );

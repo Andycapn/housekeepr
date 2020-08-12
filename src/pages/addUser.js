@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BodyText } from "../components/styledelements";
 import "../Stylesheets/register.css";
 import { Form, Row, Col } from "react-bootstrap";
@@ -8,6 +8,7 @@ import axios from "axios";
 import { Formik, Field } from "formik";
 import Layout from "../components/layout";
 import { MainDiv, FormLabel } from "../components/MyStyledComonents";
+import Context from "../store/context";
 
 const errorStyling = {
   marginBottom: "20px",
@@ -15,6 +16,8 @@ const errorStyling = {
 };
 
 const AddUser = () => {
+  const { state } = useContext(Context);
+
   // URI Encode data
   const encode = (data) => {
     return Object.keys(data)
