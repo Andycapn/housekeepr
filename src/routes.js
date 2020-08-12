@@ -5,7 +5,7 @@ import AddUser from "./pages/addUser";
 import User from "./pages/user";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard/dashboard";
-import { Redirect, Router, BrowserRouter } from "react-router-dom";
+import { Router, BrowserRouter } from "react-router-dom";
 import history from "./history";
 import Inspections from "./pages/inspections";
 

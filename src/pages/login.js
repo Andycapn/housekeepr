@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { PageLayout, Title, BodyText } from "../components/styledelements";
 import "../Stylesheets/login.css";
 import { Jumbotron, Form } from "react-bootstrap";
@@ -15,8 +15,6 @@ const Login = () => {
     response: "",
     auth: "",
   });
-
-  let errorBox = useRef(null);
 
   // URI Encode data
   const encode = (data) => {

@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../components/layout";
 import { MainDiv } from "../components/MyStyledComonents";
 import { Card, HTMLTable } from "@blueprintjs/core";
 import axios from "axios";
 import { useCookies } from "react-cookie";
-import Context from "../store/context";
 
 // URI Encode data
 const encode = (data) => {
@@ -17,7 +16,7 @@ const Inspections = () => {
   const [cookies] = useCookies(["housekeepr"]);
 
   const [inspectionPageState, setInspectionPageState] = useState({
-    inspections: [],
+    inspections: [cookies.housekeepr],
   });
 
   useEffect(() => {
@@ -27,7 +26,7 @@ const Inspections = () => {
         console.log(response.data);
         setInspectionPageState({ inspections: response.data.result });
       });
-  }, []);
+  }, [cookies.housekeepr]);
 
   return (
     <Layout>
@@ -35,23 +34,29 @@ const Inspections = () => {
         <Card>
           <h1>Inspections</h1>
           <hr />
-
           <HTMLTable style={{ width: "100%" }} bordered>
-            <tr>
-              <th>Inspection ID</th>
-              <th>Inspected By</th>
-              <th>Conducted On</th>
-              <th>Score</th>
-            </tr>
-            {!inspectionPageState.inspections.length ? <h1>No Inspections Yet</h1> : null}
-            {inspectionPageState.inspections.map((element, index) => (
+            <thead>
               <tr>
-                <td>{inspectionPageState.inspections[index].inspection_id}</td>
-                <td>{inspectionPageState.inspections[index].first_name}</td>
-                <td>{inspectionPageState.inspections[index].date}</td>
-                <td>null</td>
+                <th>Inspection ID</th>
+                <th>Inspected By</th>
+                <th>Conducted On</th>
+                <th>Score</th>
               </tr>
-            ))}
+            </thead>
+            <tbody>
+              {!inspectionPageState.inspections ? (
+                <h3 style={{ textAlign: "center" }}>No Inspections Yet</h3>
+              ) : (
+                inspectionPageState.inspections.map((element, index) => (
+                  <tr key={index}>
+                    <td>{inspectionPageState.inspections[index].inspection_id}</td>
+                    <td>{inspectionPageState.inspections[index].first_name}</td>
+                    <td>{inspectionPageState.inspections[index].date}</td>
+                    <td>null</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
           </HTMLTable>
         </Card>
       </MainDiv>

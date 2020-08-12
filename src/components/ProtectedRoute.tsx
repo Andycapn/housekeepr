@@ -1,7 +1,5 @@
 import { Route, Redirect } from "react-router";
-import axios from "axios";
-import React, { useState } from "react";
-import { bool } from "prop-types";
+import React from "react";
 import decode from "jwt-decode";
 
 const checkAuth = () => {

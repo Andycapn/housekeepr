@@ -21,7 +21,7 @@ let responseData = {
   },
 };
 
-// URI Encode data
+// URI Encode data for form submission
 const encode = (data) => {
   return Object.keys(data)
     .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
@@ -160,7 +160,7 @@ function Dashboard() {
                               Save Changes
                             </Button>
                             <Button
-                              onClick={(e) => {
+                              onClick={() => {
                                 setUserPageState({ passwordIsEditing: false });
                               }}
                               icon="cross"
@@ -176,7 +176,7 @@ function Dashboard() {
                       }
                       {!userPageState.passwordIsEditing ? (
                         <Button
-                          onClick={(e) => setUserPageState({ passwordIsEditing: true })}
+                          onClick={() => setUserPageState({ passwordIsEditing: true })}
                           intent="primary"
                           minimal
                           outlined

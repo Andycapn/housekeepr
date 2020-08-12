@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Alignment, Navbar, Button, AnchorButton, NavbarDivider, Icon } from "@blueprintjs/core";
+import { Alignment, Navbar, Button, NavbarDivider, Icon } from "@blueprintjs/core";
 import Context from "../store/context";
 import styled from "@emotion/styled";
 import { useCookies } from "react-cookie";
@@ -43,14 +43,14 @@ const Header = () => {
       <Navbar fixedToTop style={{ paddingLeft: "230px" }}>
         <Navbar.Group>
           <Link to="/dashboard">
-            <Button href="/dashboard" icon="home" minimal style={{ transition: "200ms ease-in" }}>
+            <Button href="/dashboard" icon="home" minimal style={{ transition: "125ms ease-in" }}>
               Dashboard
             </Button>
           </Link>
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
           <Link to="/user">
-            <Button intent="primary" minimal rightIcon="user">
+            <Button intent="primary" minimal rightIcon="user" style={{ transition: "125ms ease-in" }}>
               {state.first_name}
             </Button>
           </Link>
@@ -59,6 +59,7 @@ const Header = () => {
             intent="danger"
             rightIcon="log-out"
             minimal
+            style={{ transition: "125ms ease-in" }}
             onClick={() => {
               removeCookie("housekeepr");
               return history.push("/login", history.state);
@@ -73,20 +74,20 @@ const Header = () => {
           <img src={HouseKeeprLogo} alt="" style={{ height: "45px", margin: "7px 0 20px 0" }} />
         </Link>
 
-        <SidebarLink href="" intent="primary" icon="user" minimal>
+        <SidebarLink to="#" intent="primary" icon="user">
           <span style={{ marginRight: "5px" }}>
             <Icon icon="plus" />
           </span>
           New Inspection
         </SidebarLink>
-        <SidebarLink to="/inspections" intent="primary" icon="user" minimal>
+        <SidebarLink to="/inspections" intent="primary" icon="user">
           <span style={{ marginRight: "5px" }}>
-            <Icon icon="history" />
+            <Icon icon="clipboard" />
           </span>
           Inspections
         </SidebarLink>
         {state.privilege === "admin" ? (
-          <SidebarLink to="/add-user" intent="primary" icon="user" minimal>
+          <SidebarLink to="/add-user" intent="primary" icon="user">
             <span style={{ marginRight: "5px" }}>
               <Icon icon="user" />
             </span>

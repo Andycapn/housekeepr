@@ -4,7 +4,6 @@ import styled from "@emotion/styled";
 import axios from "axios";
 import Context from "../store/context";
 import { useCookies } from "react-cookie";
-import jwt from "jwt-decode";
 import history from "../history";
 
 const MainDiv = styled.main`
@@ -21,6 +20,7 @@ const encode = (data) => {
     .join("&");
 };
 
+//Manages App Layout and Global Storage.
 const Layout = ({ children }) => {
   const [cookies, setCookies] = useCookies(["housekeepr"]);
   const token = cookies.housekeepr;
@@ -35,7 +35,7 @@ const Layout = ({ children }) => {
       .catch((error) => {
         history.push("/login", history.state);
       });
-    return <div>Loading</div>;
+    return <div style={{ display: "grid", place: "center" }}>Loading...</div>;
   }
 
   return (

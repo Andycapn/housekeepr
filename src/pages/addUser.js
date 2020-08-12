@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { BodyText } from "../components/styledelements";
 import "../Stylesheets/register.css";
 import { Form, Row, Col } from "react-bootstrap";
@@ -8,7 +8,6 @@ import axios from "axios";
 import { Formik, Field } from "formik";
 import Layout from "../components/layout";
 import { MainDiv, FormLabel } from "../components/MyStyledComonents";
-import Context from "../store/context";
 
 const errorStyling = {
   marginBottom: "20px",
@@ -16,8 +15,6 @@ const errorStyling = {
 };
 
 const AddUser = () => {
-  const { state } = useContext(Context);
-
   // URI Encode data
   const encode = (data) => {
     return Object.keys(data)
@@ -65,7 +62,7 @@ const AddUser = () => {
           <h1>Add New User</h1>
           <hr />
           <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-            {({ values, handleChange, handleBlur, handleSubmit, errors, touched, isSubmitting, dirty }) => (
+            {({ values, handleSubmit, errors, touched, isSubmitting, dirty }) => (
               <Form onSubmit={handleSubmit}>
                 {errors.backendError !== undefined && errors.backendError !== "" ? (
                   <Callout style={errorStyling} intent="danger">
@@ -101,7 +98,6 @@ const AddUser = () => {
                     </Form.Group>
                   </Col>
                 </Row>
-
                 <Form.Group controlId="formBasicEmail">
                   <FormLabel>Email address</FormLabel>
                   <Field type="email" placeholder="Enter email" name="email" as={Form.Control} />
