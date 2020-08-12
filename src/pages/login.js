@@ -76,7 +76,6 @@ const Login = () => {
     <PageLayout className={`login-main`}>
       <img src={Logo} className="logo" alt="" />
       <Title style={{ color: "white", textAlign: "center" }}>HouseKeepr</Title>
-      <BodyText style={{ color: "white", textAlign: "center" }}>Chaminuka Lodge</BodyText>
       <BodyText style={{ color: "white", textAlign: "center" }}>Login</BodyText>
       <Jumbotron className={`form-jumbo`}>
         <Form>

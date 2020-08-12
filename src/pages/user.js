@@ -1,14 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Layout from "../components/layout";
 import Context from "../store/context";
 import { MainDiv } from "../components/MyStyledComonents";
 import "./Dashboard/dashboard.css";
-import { Jumbotron, Form, FormControl, FormGroup, Row, Col } from "react-bootstrap";
+import { Form, FormControl, FormGroup, Row, Col } from "react-bootstrap";
 import { Formik, Field } from "formik";
 import { validationSchema } from "../components/validation";
 import axios from "axios";
 import styled from "@emotion/styled";
-import { Card } from "@blueprintjs/core";
+import { Card, Button } from "@blueprintjs/core";
 
 const FormLabel = styled(Form.Label)`
   font-weight: bold;
@@ -44,6 +44,9 @@ const handleSubmit = async (data, { setErrors, setSubmitting, setValues }) => {
 
 function Dashboard() {
   const { state } = useContext(Context);
+  const [userPageState, setUserPageState] = useState({
+    passwordIsEditing: false,
+  });
 
   // Initial Values for form
   const initialValues = {
@@ -65,7 +68,7 @@ function Dashboard() {
                 <h1>Details</h1>
                 <hr />
                 <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-                  {({ values, handleChange, handleBlur, handleSubmit, errors, touched }) => (
+                  {({ values, handleChange, handleBlur, handleSubmit, errors, touched, dirty }) => (
                     <Form>
                       <FormGroup>
                         <Row>
@@ -91,6 +94,16 @@ function Dashboard() {
                         <FormLabel>Email Address</FormLabel>
                         <Field type="email" value={values.email} name="email" as={FormControl} />
                       </FormGroup>
+                      <Button
+                        type="submit"
+                        intent={!dirty ? "" : "success"}
+                        minimal
+                        outlined
+                        disabled={!dirty}
+                        icon="saved"
+                      >
+                        Save Changes
+                      </Button>
                     </Form>
                   )}
                 </Formik>
@@ -99,7 +112,49 @@ function Dashboard() {
                 <h1>Password</h1>
                 <hr />
                 <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-                  {({ values, handleChange, handleBlur, handleSubmit, errors, touched }) => <Form></Form>}
+                  {({ values, handleChange, handleBlur, handleSubmit, errors, touched }) => (
+                    <Form>
+                      <FormGroup>
+                        <FormLabel>Password</FormLabel>
+                        <Field
+                          type="password"
+                          name="currentPassword"
+                          value={userPageState.passwordIsEditing ? "" : "*********"}
+                          placeholder={userPageState.passwordIsEditing ? "Enter your old password" : ""}
+                          as={FormControl}
+                          disabled={!userPageState.passwordIsEditing}
+                        />
+                      </FormGroup>
+                      {userPageState.passwordIsEditing ? (
+                        <>
+                          <FormGroup>
+                            <FormLabel>New Password</FormLabel>
+                            <Field
+                              type="password"
+                              name="newPassword"
+                              placeholder="Enter a new password"
+                              as={FormControl}
+                            />
+                          </FormGroup>
+                          <Button type="submit" icon="saved" style={{ marginRight: " 5px" }}>
+                            Save Changes
+                          </Button>
+                          <Button
+                            onClick={(e) => {
+                              setUserPageState({ passwordIsEditing: false });
+                            }}
+                            icon="cross"
+                            style={{ marginRight: " 5px" }}
+                          >
+                            Cancel
+                          </Button>
+                        </>
+                      ) : null}
+                      {!userPageState.passwordIsEditing ? (
+                        <Button onClick={(e) => setUserPageState({ passwordIsEditing: true })}>Edit</Button>
+                      ) : null}
+                    </Form>
+                  )}
                 </Formik>
               </Card>
             </MainDiv>

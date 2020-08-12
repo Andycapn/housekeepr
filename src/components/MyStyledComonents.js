@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { Form } from "react-bootstrap";
 
 // Page Elements //
 
@@ -118,4 +119,9 @@ const FooterTag = styled.footer`
     padding: 0.5rem calc((100vw - 1366px) / 2);
   }
 `;
-export { BodyText, Header, ExternalLink, FooterText, FooterTag, MainDiv, ListItem };
+
+const FormLabel = styled(Form.Label)`
+  font-weight: bold;
+`;
+
+export { BodyText, Header, ExternalLink, FooterText, FooterTag, MainDiv, ListItem, FormLabel };

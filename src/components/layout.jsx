@@ -4,6 +4,8 @@ import styled from "@emotion/styled";
 import axios from "axios";
 import Context from "../store/context";
 import { useCookies } from "react-cookie";
+import jwt from "jwt-decode";
+import history from "../history";
 
 const MainDiv = styled.main`
   position: relative;
@@ -19,20 +21,21 @@ const encode = (data) => {
     .join("&");
 };
 
-const getUserData = async (token, state, setState) => {
-  const userData = await axios.post("http://localhost:3000/auth/", encode({ token: token }));
-  setState({ ...state, ...userData.data });
-};
-
-// @ts-ignore
 const Layout = ({ children }) => {
-  const [cookies, serCookies] = useCookies(["housekeepr"]);
+  const [cookies, setCookies] = useCookies(["housekeepr"]);
   const token = cookies.housekeepr;
   const { state, setState } = useContext(Context);
 
   if (!state.id) {
-    getUserData(token, state, setState);
-    return <div>loading...</div>;
+    axios
+      .post("http://localhost:3000/auth/", encode({ token: token }))
+      .then((response) => {
+        setState({ ...response.data });
+      })
+      .catch((error) => {
+        history.push("/login", history.state);
+      });
+    return <div>Loading</div>;
   }
 
   return (

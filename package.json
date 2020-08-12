@@ -17,6 +17,7 @@
     "bootstrap": "^4.5.0",
     "cra-template": "1.0.3",
     "formik": "^2.1.5",
+    "genversion": "^2.2.1",
     "history": "^5.0.0",
     "jquery": "^3.5.1",
     "jwt-decode": "^2.2.0",

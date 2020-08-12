@@ -1,73 +1,103 @@
 import React, { useContext } from "react";
-import { Alignment, Navbar, Button, AnchorButton, NavbarDivider } from "@blueprintjs/core";
+import { Alignment, Navbar, Button, AnchorButton, NavbarDivider, Icon } from "@blueprintjs/core";
 import Context from "../store/context";
 import styled from "@emotion/styled";
 import { useCookies } from "react-cookie";
 import HouseKeeprLogo from "../Images/HouseKeepr-cropped.png";
 import history from "../history";
+import { Link } from "react-router-dom";
+
+const Sidebar = styled.div`
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 220px;
+  height: 100vh;
+  border-right: 1px solid rgb(224, 224, 224);
+  align-items: center;
+`;
+
+const SidebarLink = styled(Link)`
+  width: 100%;
+
+  font-weight: bold;
+  transition: 200ms ease-in;
+  padding: 15px 0 15px 50px;
+  &:hover {
+    border-left: 5px solid #41b7fc;
+    background-color: #d2d2d2;
+    text-decoration: none;
+  }
+  &.active-style {
+    border-left: 5px solid #41b7fc;
+    background-color: #d2d2d2;
+    text-decoration: none;
+  }
+`;
 
 const Header = () => {
   // @ts-ignore
   const { state } = useContext(Context);
   const [cookies, removeCookie] = useCookies(["housekeepr"]);
 
-  const Sidebar = styled.div`
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    width: 220px;
-    height: 100vh;
-    border-right: 1px solid rgb(224, 224, 224);
-  `;
-
-  const SidebarButton = styled(AnchorButton)`
-    margin: 5px 0;
-    width: 150px;
-    font-weight: bold;
-  `;
-
   return (
     <div>
       <Navbar fixedToTop style={{ paddingLeft: "230px" }}>
         <Navbar.Group>
-          <AnchorButton href="/dashboard" icon="home" minimal>
-            Dashboard
-          </AnchorButton>
+          <Link to="/dashboard">
+            <Button href="/dashboard" icon="home" minimal>
+              Dashboard
+            </Button>
+          </Link>
         </Navbar.Group>
 
         <Navbar.Group align={Alignment.RIGHT}>
-          <AnchorButton href="/user" intent="primary" minimal rightIcon="user">
-            {state.first_name}
-          </AnchorButton>
+          <Link to="/user">
+            <Button intent="primary" minimal rightIcon="user">
+              {state.first_name}
+            </Button>
+          </Link>
           <NavbarDivider />
           <Button
             intent="danger"
-            icon="log-out"
+            rightIcon="log-out"
             minimal
             onClick={() => {
               removeCookie("housekeepr");
               return history.push("/login", history.state);
             }}
-          />
+          >
+            Logout
+          </Button>
         </Navbar.Group>
       </Navbar>
       <Sidebar>
-        <img src={HouseKeeprLogo} alt="" style={{ height: "45px", marginTop: "10px" }} />
-        <ul style={{ margin: "20px 0" }}>
-          <SidebarButton intent="primary" icon="add" minimal>
-            New Inspection
-          </SidebarButton>
-          <SidebarButton intent="primary" icon="history" minimal>
-            View Reports
-          </SidebarButton>
-          <SidebarButton href="/register" intent="primary" icon="user" minimal>
-            Add User
-          </SidebarButton>
-        </ul>
+        <Link to="/dashboard">
+          <img src={HouseKeeprLogo} alt="" style={{ height: "45px", margin: "7px 0 20px 0" }} />
+        </Link>
+
+        <SidebarLink href="" intent="primary" icon="user" minimal>
+          <span style={{ marginRight: "5px" }}>
+            <Icon icon="plus" />
+          </span>
+          New Inspection
+        </SidebarLink>
+        <SidebarLink href="" intent="primary" icon="user" minimal>
+          <span style={{ marginRight: "5px" }}>
+            <Icon icon="history" />
+          </span>
+          Inspections
+        </SidebarLink>
+        <SidebarLink to="/add-user" intent="primary" icon="user" minimal>
+          <span style={{ marginRight: "5px" }}>
+            <Icon icon="user" />
+          </span>
+          Add User
+        </SidebarLink>
       </Sidebar>
     </div>
   );
