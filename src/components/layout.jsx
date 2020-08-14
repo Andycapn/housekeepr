@@ -1,11 +1,20 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Header from "./Header";
 import styled from "@emotion/styled";
 import axios from "axios";
 import Context from "../store/context";
 import { useCookies } from "react-cookie";
-import history from "../history";
+import { Redirect } from "react-router";
+import { ClipLoader } from "react-spinners";
+import { css } from "@emotion/core";
 
+const spinnerStyling = css`
+  margin: 0 auto;
+  position: absolute;
+  top: 45%;
+`;
+
+// Custom container for children pages.
 const MainDiv = styled.main`
   position: relative;
   margin-top: 50px;
@@ -25,17 +34,24 @@ const Layout = ({ children }) => {
   const [cookies, setCookies] = useCookies(["housekeepr"]);
   const token = cookies.housekeepr;
   const { state, setState } = useContext(Context);
-
+  useEffect(() => {
+    if (!state.id) {
+      axios
+        .post("http://localhost:3000/auth/", encode({ token: token }))
+        .then((response) => {
+          setState({ ...response.data });
+        })
+        .catch((error) => {
+          return <Redirect to="login" />;
+        });
+    }
+  }, []);
   if (!state.id) {
-    axios
-      .post("http://localhost:3000/auth/", encode({ token: token }))
-      .then((response) => {
-        setState({ ...response.data });
-      })
-      .catch((error) => {
-        history.push("/login", history.state);
-      });
-    return <div style={{ display: "grid", place: "center" }}>Loading...</div>;
+    return (
+      <div style={{ textAlign: "center", display: "relative" }}>
+        <ClipLoader css={spinnerStyling} />
+      </div>
+    );
   }
 
   return (

@@ -4,7 +4,6 @@ import Context from "../store/context";
 import styled from "@emotion/styled";
 import { useCookies } from "react-cookie";
 import HouseKeeprLogo from "../Images/HouseKeepr-cropped.png";
-import history from "../history";
 import { Link } from "react-router-dom";
 
 const Sidebar = styled.div`
@@ -55,25 +54,25 @@ const Header = () => {
             </Button>
           </Link>
           <NavbarDivider />
-          <Button
-            intent="danger"
-            rightIcon="log-out"
-            minimal
-            style={{ transition: "125ms ease-in" }}
-            onClick={() => {
-              removeCookie("housekeepr");
-              return history.push("/login", history.state);
-            }}
-          >
-            Logout
-          </Button>
+          <Link to="/login">
+            <Button
+              intent="danger"
+              rightIcon="log-out"
+              minimal
+              style={{ transition: "125ms ease-in" }}
+              onClick={() => {
+                removeCookie("housekeepr");
+              }}
+            >
+              Logout
+            </Button>
+          </Link>
         </Navbar.Group>
       </Navbar>
       <Sidebar>
         <Link to="/dashboard">
           <img src={HouseKeeprLogo} alt="" style={{ height: "45px", margin: "7px 0 20px 0" }} />
         </Link>
-
         <SidebarLink to="#" intent="primary" icon="user">
           <span style={{ marginRight: "5px" }}>
             <Icon icon="plus" />
