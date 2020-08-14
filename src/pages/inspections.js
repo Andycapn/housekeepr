@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/layout";
-import { MainDiv } from "../components/MyStyledComonents";
+import { MainDiv, BodyText } from "../components/MyStyledComonents";
 import { Card, HTMLTable } from "@blueprintjs/core";
 import axios from "axios";
 import { useCookies } from "react-cookie";
@@ -46,11 +46,10 @@ const Inspections = () => {
           style={{
             textAlign: "center",
             display: "flex",
-            flexDirection: "center",
-            justifyContent: "center",
           }}
         >
-          <ClipLoader css={spinnerStyling} />
+          <ClipLoader css={spinnerStyling} color={"#41b7fc"} />
+          <BodyText>Loading Inspections</BodyText>
         </div>
       ) : (
         <MainDiv>

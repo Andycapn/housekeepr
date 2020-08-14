@@ -49,7 +49,7 @@ const Layout = ({ children }) => {
   if (!state.id) {
     return (
       <div style={{ textAlign: "center", display: "relative" }}>
-        <ClipLoader css={spinnerStyling} />
+        <ClipLoader css={spinnerStyling} color={"#41b7fc"} />
       </div>
     );
   }
