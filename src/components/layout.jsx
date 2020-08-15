@@ -45,7 +45,7 @@ const Layout = ({ children }) => {
           return <Redirect to="login" />;
         });
     }
-  }, []);
+  }, [token]);
   if (!state.id) {
     return (
       <div style={{ textAlign: "center", display: "relative" }}>
