@@ -14,6 +14,7 @@ const Login = () => {
     errorMsg: "",
     response: "",
     auth: "",
+    submitting: false,
   });
 
   // URI Encode data
@@ -45,6 +46,7 @@ const Login = () => {
       // Remove Error Message when form is filled
       setLoginState({ ...loginState, errors: "" });
     }
+    setLoginState({ ...loginState, submitting: true });
     axios
       .post("http://localhost:3000/auth/login", encode({ ...loginState }), {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -54,6 +56,7 @@ const Login = () => {
         setLoginState({
           ...loginState,
           ...response.data,
+          submitting: false,
         });
       })
       .catch((error) => {
@@ -105,6 +108,7 @@ const Login = () => {
             className="submit-btn"
             onClick={(e) => HandleSubmit(e)}
             rightIcon={`log-in`}
+            loading={loginState.submitting}
           >
             Log in
           </Button>
