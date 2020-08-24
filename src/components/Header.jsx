@@ -73,7 +73,7 @@ const Header = () => {
         <Link to="/dashboard">
           <img src={HouseKeeprLogo} alt="" style={{ height: "45px", margin: "7px 0 20px 0" }} />
         </Link>
-        <SidebarLink to="#" intent="primary" icon="user">
+        <SidebarLink to="/new-inspection" intent="primary" icon="user">
           <span style={{ marginRight: "5px" }}>
             <Icon icon="plus" />
           </span>
