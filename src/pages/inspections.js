@@ -24,7 +24,7 @@ const Inspections = () => {
   const [cookies] = useCookies(["housekeepr"]);
 
   const [inspectionPageState, setInspectionPageState] = useState({
-    inspections: [cookies.housekeepr],
+    inspections: [],
     loading: true,
   });
 
