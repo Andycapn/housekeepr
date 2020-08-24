@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard/dashboard";
 import { Router, BrowserRouter } from "react-router-dom";
 import history from "./history";
 import Inspections from "./pages/inspections";
+import NewInspection from "./pages/new-inspection/new-inspection";
 
 const Routes = () => {
   return (
@@ -26,6 +27,9 @@ const Routes = () => {
           </ProtectedRoute>
           <ProtectedRoute exact path="/inspections">
             <Inspections />
+          </ProtectedRoute>
+          <ProtectedRoute exact path="/new-inspection">
+            <NewInspection />
           </ProtectedRoute>
         </Switch>
       </BrowserRouter>
