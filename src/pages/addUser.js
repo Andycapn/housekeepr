@@ -1,5 +1,5 @@
 import React from "react";
-import { BodyText } from "../components/styledelements";
+import { BodyText, Title } from "../components/styledelements";
 import "../Stylesheets/register.css";
 import { Form, Row, Col } from "react-bootstrap";
 import { Button, Callout, Card } from "@blueprintjs/core";
@@ -59,7 +59,7 @@ const AddUser = () => {
       <MainDiv>
         <BodyText style={{ color: "white", textAlign: "center" }}>Register User</BodyText>
         <Card className={`form-jumbo`}>
-          <h1>Add New User</h1>
+          <Title>Add New User</Title>
           <hr />
           <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
             {({ values, handleSubmit, errors, touched, isSubmitting, dirty }) => (
