@@ -7,6 +7,8 @@ import Logo from "../Images/icons/cleaning.svg";
 import axios from "axios";
 import { Redirect } from "react-router";
 
+//TODO: Implement formik for form validation
+
 const Login = () => {
   const [loginState, setLoginState] = useState({
     email: "",
@@ -62,6 +64,7 @@ const Login = () => {
       .catch((error) => {
         if (error) {
           setLoginState({
+            ...loginState,
             ...error.response.data,
           });
         }
