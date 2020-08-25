@@ -2,7 +2,7 @@ import React from "react";
 import { BodyText, Title } from "../components/styledelements";
 import "../Stylesheets/register.css";
 import { Form, Row, Col } from "react-bootstrap";
-import { Button, Callout, Card } from "@blueprintjs/core";
+import { Button, Callout, Card, HTMLSelect, Label } from "@blueprintjs/core";
 import { validationSchema } from "../components/validation";
 import axios from "axios";
 import { Formik, Field } from "formik";
@@ -30,6 +30,7 @@ const AddUser = () => {
     phone: "",
     password: "",
     confirmPassword: "",
+    privilege: "Standard",
   };
 
   let responseData = {
@@ -62,7 +63,7 @@ const AddUser = () => {
           <Title>Add New User</Title>
           <hr />
           <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-            {({ values, handleSubmit, errors, touched, isSubmitting, dirty }) => (
+            {({ values, handleSubmit, errors, touched, isSubmitting, dirty, handleChange }) => (
               <Form onSubmit={handleSubmit}>
                 {errors.backendError !== undefined && errors.backendError !== "" ? (
                   <Callout style={errorStyling} intent="danger">
@@ -113,6 +114,20 @@ const AddUser = () => {
                   {errors.phone !== undefined && errors.phone !== "" && touched.phone ? (
                     <Callout style={errorStyling} intent="warning">
                       {errors.phone}
+                    </Callout>
+                  ) : null}
+                </Form.Group>
+                <Form.Group controlId="privilege">
+                  <Label style={{ fontWeight: "bold" }}>User Privilege</Label>
+                  <HTMLSelect name="privilege" onChange={handleChange}>
+                    <option value="Admin">Admin</option>
+                    <option value="Standard" selected>
+                      Standard
+                    </option>
+                  </HTMLSelect>
+                  {errors.privilege !== undefined && errors.privilege !== "" && touched.privilege ? (
+                    <Callout style={errorStyling} intent="warning">
+                      {errors.privilege}
                     </Callout>
                   ) : null}
                 </Form.Group>
