@@ -93,7 +93,7 @@ function Dashboard() {
                               value={values.first_name}
                               name="first_name"
                               as={FormControl}
-                              disabled={state.privilege !== "admin" ? true : false}
+                              disabled={state.privilege !== "admin"}
                             />
                           </Col>
                           <Col>
@@ -102,7 +102,7 @@ function Dashboard() {
                               value={values.last_name}
                               name="last_name"
                               as={FormControl}
-                              disabled={state.privilege !== "admin" ? true : false}
+                              disabled={state.privilege !== "admin"}
                             />
                           </Col>
                         </Row>
