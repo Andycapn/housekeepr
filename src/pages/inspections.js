@@ -37,7 +37,7 @@ const Inspections = () => {
           setInspectionPageState({ inspections: response.data.result, loading: false });
         });
     }
-  }, [cookies.housekeepr]);
+  }, [cookies.housekeepr, inspectionPageState.loading]);
 
   return (
     <Layout>
