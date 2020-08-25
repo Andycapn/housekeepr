@@ -12,12 +12,10 @@ import { ClipLoader } from "react-spinners";
 import { Formik, FieldArray, Form } from "formik";
 import { validationSchema } from "../../components/NewInspectionValidation";
 import { Prompt } from "react-router-dom";
+import { useHistory } from "react-router";
 
 const FormLabel = styled(Label)`
   font-size: 16px;
-  &:first-letter {
-    font-weight: bold;
-  }
 `;
 
 const spinnerStyling = css`
@@ -29,9 +27,10 @@ const spinnerStyling = css`
 const NewInspection = () => {
   const [cookies, setCookies] = useCookies(["housekeepr"]);
   const token = cookies.housekeepr;
-  const [pageState, setPageState] = useState({ questions: [], loading: true, step: 1 });
+  const [pageState, setPageState] = useState({ questions: [], loading: true, saved: false, step: 1 });
   const { state } = useContext(Context);
   const currentDate = new Date();
+  let history = useHistory();
 
   useEffect(() => {
     axios
@@ -76,12 +75,18 @@ const NewInspection = () => {
               }}
               onSubmit={(data) => {
                 console.log(data);
+                setPageState({ ...pageState, saved: true });
+                history.push("/dashboard");
               }}
               validationSchema={validationSchema}
             >
               {({ values, handleChange, errors, dirty }) => (
                 <Form>
-                  <Prompt message="You have unsaved changes, are you sure you want to leave this page?" when={dirty} />
+                  <Prompt
+                    message="You have unsaved changes, are you sure you want to leave this page?"
+                    when={dirty && !pageState.saved}
+                  />
+
                   <FieldArray name="answers">
                     {() => (
                       <div>
@@ -91,7 +96,8 @@ const NewInspection = () => {
                               <Card style={{ margin: "10px 0" }}>
                                 <FormGroup key={question.id} intent="success">
                                   <FormLabel>
-                                    {`${index + 1}.  ${question.question} `}
+                                    <span style={{ fontWeight: "bold" }}>{`${index + 1}. `}</span>
+                                    {`${question.question} `}
                                     <span className="bp3-text-muted">{`(${pageState.questions[index].category})`}</span>
                                   </FormLabel>
                                   <HTMLSelect
