@@ -8,7 +8,10 @@ import Dashboard from "./pages/Dashboard/dashboard";
 import { Router, BrowserRouter } from "react-router-dom";
 import history from "./history";
 import Inspections from "./pages/inspections";
-import NewInspection from "./pages/new-inspection/new-inspection";
+import NewInspection from "./pages/new-inspection/newInspection";
+
+//TODO: Implement a 404 Page
+//TODO: Implement a Home Page
 
 const Routes = () => {
   return (
@@ -28,7 +31,7 @@ const Routes = () => {
           <ProtectedRoute exact path="/inspections">
             <Inspections />
           </ProtectedRoute>
-          <ProtectedRoute exact path="/new-inspection">
+          <ProtectedRoute exact path="/newInspection">
             <NewInspection />
           </ProtectedRoute>
         </Switch>
