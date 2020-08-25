@@ -3,6 +3,8 @@ import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 
 const PartOne = (props) => {
   if (props.currentStep !== 1) return null;
+  const currentDate = new Date();
+  const date = `${currentDate.getDate()}/${currentDate.getMonth()}/${currentDate.getFullYear()}`;
   return (
     <>
       <FormGroup>
@@ -11,7 +13,7 @@ const PartOne = (props) => {
       </FormGroup>
       <FormGroup>
         <FormLabel>Date</FormLabel>
-        <FormControl type="date" />
+        <FormControl type="text" value={date} disabled />
       </FormGroup>
       <FormGroup>
         <FormLabel>Room</FormLabel>
