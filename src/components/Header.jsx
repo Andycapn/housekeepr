@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import { Alignment, Navbar, Button, NavbarDivider, Icon } from "@blueprintjs/core";
+import { Alignment, Navbar, Button, NavbarDivider, Icon, Popover, Menu, MenuItem } from "@blueprintjs/core";
 import Context from "../store/context";
 import styled from "@emotion/styled";
 import { useCookies } from "react-cookie";
 import HouseKeeprLogo from "../Images/HouseKeepr-cropped.png";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const Sidebar = styled.div`
   background-color: white;
@@ -34,8 +34,9 @@ const SidebarLink = styled(Link)`
 
 const Header = () => {
   // @ts-ignore
-  const { state } = useContext(Context);
+  const { state, setState } = useContext(Context);
   const [cookies, removeCookie] = useCookies(["housekeepr"]);
+  let history = useHistory();
 
   return (
     <div>
@@ -54,26 +55,33 @@ const Header = () => {
             </Button>
           </Link>
           <NavbarDivider />
-          <Link to="/login">
-            <Button
-              intent="danger"
-              rightIcon="log-out"
-              minimal
-              style={{ transition: "125ms ease-in" }}
-              onClick={() => {
-                removeCookie("housekeepr");
-              }}
-            >
-              Logout
-            </Button>
-          </Link>
+
+          <Button
+            intent="danger"
+            rightIcon="log-out"
+            minimal
+            style={{ transition: "125ms ease-in" }}
+            onClick={() => {
+              setState({
+                id: "",
+                first_name: "",
+                last_name: "",
+                sidebarOpen: false,
+                currentDate: new Date(),
+              });
+              removeCookie("housekeepr");
+              history.push("/login");
+            }}
+          >
+            Logout
+          </Button>
         </Navbar.Group>
       </Navbar>
       <Sidebar>
         <Link to="/dashboard">
           <img src={HouseKeeprLogo} alt="" style={{ height: "45px", margin: "7px 0 20px 0" }} />
         </Link>
-        <SidebarLink to="/new-inspection" intent="primary" icon="user">
+        <SidebarLink to="/newInspection" intent="primary" icon="user">
           <span style={{ marginRight: "5px" }}>
             <Icon icon="plus" />
           </span>
