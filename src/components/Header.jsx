@@ -67,7 +67,6 @@ const Header = () => {
                 first_name: "",
                 last_name: "",
                 sidebarOpen: false,
-                currentDate: new Date(),
               });
               removeCookie("housekeepr");
               history.push("/login");
