@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../components/layout";
 import { MainDiv } from "../../components/MyStyledComonents";
-import { Card, FormGroup, Label, Button, HTMLSelect } from "@blueprintjs/core";
+import { Card, FormGroup, Label, Button, HTMLSelect, Callout } from "@blueprintjs/core";
 import PartOne from "./new-inspection-part-one";
 import Context from "../../store/context";
 import axios from "axios";
@@ -58,6 +58,14 @@ const NewInspection = () => {
     return { id: q.id, question: q.question, answer: "" };
   });
 
+  const categories = [
+    ...new Set(
+      pageState.questions.map((q) => {
+        return q.category;
+      })
+    ),
+  ];
+
   return (
     <>
       <Layout>
@@ -86,43 +94,51 @@ const NewInspection = () => {
                     message="You have unsaved changes, are you sure you want to leave this page?"
                     when={dirty && !pageState.saved}
                   />
-
-                  <FieldArray name="answers">
-                    {() => (
-                      <div>
-                        {values.answers.map((question, index) => {
-                          return (
-                            <>
-                              <Card style={{ margin: "10px 0" }}>
-                                <FormGroup key={question.id} intent="success">
-                                  <FormLabel>
-                                    <span style={{ fontWeight: "bold" }}>{`${index + 1}. `}</span>
-                                    {`${question.question} `}
-                                    <span className="bp3-text-muted">{`(${pageState.questions[index].category})`}</span>
-                                  </FormLabel>
-                                  <HTMLSelect
-                                    name={`answers[${index}].answer`}
-                                    onChange={handleChange}
-                                    defaultValue="default"
-                                  >
-                                    <option value="default" disabled>
-                                      -- Please Select an Answer --
-                                    </option>
-                                    <option value="Satisfactory">Satisfactory</option>
-                                    <option value="Unsatisfactory">Unsatisfactory</option>
-                                  </HTMLSelect>
-                                </FormGroup>
-                              </Card>
-                            </>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </FieldArray>
+                  {categories.map((category, index) => (
+                    <>
+                      <Card style={{ margin: "10px 0" }}>
+                        <Callout intent="primary" icon="">
+                          <h5 className="bp3-heading">{category}</h5>
+                        </Callout>
+                        <FieldArray name="answers">
+                          {() => (
+                            <div>
+                              {values.answers.map((question, index) => {
+                                if (category === pageState.questions[index].category) {
+                                  return (
+                                    <>
+                                      <hr />
+                                      <FormGroup key={question.id} intent="success">
+                                        <FormLabel>{`${question.question} `}</FormLabel>
+                                        <HTMLSelect
+                                          name={`answers[${index}].answer`}
+                                          onChange={handleChange}
+                                          defaultValue="default"
+                                        >
+                                          <option value="default" disabled>
+                                            -- Please Select an Answer --
+                                          </option>
+                                          <option value="Satisfactory">Satisfactory</option>
+                                          <option value="Unsatisfactory">Unsatisfactory</option>
+                                        </HTMLSelect>
+                                      </FormGroup>
+                                      <hr />
+                                    </>
+                                  );
+                                } else {
+                                  return null;
+                                }
+                              })}
+                            </div>
+                          )}
+                        </FieldArray>
+                      </Card>
+                    </>
+                  ))}
+                  <pre>{JSON.stringify(values)}</pre>
                   <Button type="submit" intent="primary" minimal outlined rightIcon="tick">
                     Complete Inspection
                   </Button>
-                  <pre>{JSON.stringify(errors)}</pre>
                 </Form>
               )}
             </Formik>
