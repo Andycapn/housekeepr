@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/layout";
 import { MainDiv, BodyText } from "../components/MyStyledComonents";
-import { Card, HTMLTable } from "@blueprintjs/core";
+import { Card, HTMLTable, Button, Popover, Menu, Callout } from "@blueprintjs/core";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { ClipLoader } from "react-spinners";
 import { css } from "@emotion/core";
+import { useHistory } from "react-router";
 
 const spinnerStyling = css`
   margin: 25% auto;
@@ -22,10 +23,12 @@ const encode = (data) => {
 
 const Inspections = () => {
   const [cookies] = useCookies(["housekeepr"]);
-
+  let history = useHistory();
   const [inspectionPageState, setInspectionPageState] = useState({
     inspections: [],
     loading: true,
+    serverErrors: { display: false },
+    serverMessage: { display: false },
   });
 
   useEffect(() => {
@@ -34,10 +37,14 @@ const Inspections = () => {
         .post("http://localhost:3000/inspections/get-inspections", encode({ token: cookies.housekeepr }))
         .then((response) => {
           console.log(response.data);
-          setInspectionPageState({ inspections: response.data.result, loading: false });
+          setInspectionPageState({
+            ...inspectionPageState,
+            inspections: response.data.result,
+            loading: false,
+          });
         });
     }
-  }, [cookies.housekeepr, inspectionPageState.loading]);
+  }, [cookies.housekeepr, inspectionPageState.loading, inspectionPageState.inspections]);
 
   return (
     <Layout>
@@ -54,33 +61,122 @@ const Inspections = () => {
       ) : (
         <MainDiv>
           <Card>
-            <h1>Inspections</h1>
+            <h1 className="bp3-heading" style={{ color: "#05B2DC" }}>
+              Inspections
+            </h1>
             <hr />
             <HTMLTable style={{ width: "100%" }} bordered>
               <thead>
                 <tr>
-                  <th>Inspection ID</th>
                   <th>Inspected By</th>
                   <th>Conducted On</th>
-                  <th>Score</th>
+                  <th>Room Name</th>
                 </tr>
               </thead>
               <tbody>
                 {!inspectionPageState.inspections ? (
                   <h3 style={{ textAlign: "center" }}>No Inspections Yet</h3>
                 ) : (
-                  inspectionPageState.inspections.map((element, index) => (
+                  inspectionPageState.inspections.reverse().map((element, index) => (
                     <tr key={index}>
-                      <td>{inspectionPageState.inspections[index].inspection_id}</td>
-                      <td>{inspectionPageState.inspections[index].first_name}</td>
+                      <td>
+                        {`${inspectionPageState.inspections[index].first_name}
+                        ${inspectionPageState.inspections[index].last_name}`}
+                      </td>
                       <td>{inspectionPageState.inspections[index].date}</td>
-                      <td>null</td>
+                      <td>{inspectionPageState.inspections[index].room_name}</td>
+                      <td>
+                        <Button
+                          onClick={() => {
+                            history.push(`/inspection/${inspectionPageState.inspections[index].inspection_id}`);
+                          }}
+                          minimal
+                          intent="primary"
+                          fill
+                          icon="document-open"
+                        >
+                          View Inspection
+                        </Button>
+                      </td>
+                      <td>
+                        <Popover fill>
+                          <Button intent="danger" minimal icon="cross" fill>
+                            Delete
+                          </Button>
+                          <Menu>
+                            <p className="bp3-menu-header">
+                              Are you sure you want to delete this inspection? This action is irreversible.
+                            </p>
+                            <Menu.Divider />
+                            <Menu.Item intent="primary" text="Cancel" />
+                            <Menu.Item
+                              intent="Danger"
+                              text={"Yes"}
+                              onClick={(e) => {
+                                const id = inspectionPageState.inspections[index].inspection_id;
+                                console.log(id);
+                                axios
+                                  .delete("http://localhost:3000/inspections/deleteInspection", {
+                                    headers: {
+                                      authorization: cookies.housekeepr,
+                                      inspection_id: id,
+                                    },
+                                  })
+                                  .then((response) => {
+                                    console.log(response.data);
+                                    setInspectionPageState({
+                                      ...inspectionPageState,
+                                      serverMessage: { display: true, ...response.data },
+                                    });
+                                    setTimeout(() => {
+                                      setInspectionPageState({
+                                        ...inspectionPageState,
+                                        serverMessage: { display: false },
+                                      });
+                                    }, 2000);
+                                    if (response.status === 200) {
+                                      inspectionPageState.inspections.splice(index, 1);
+                                    }
+                                  })
+                                  .catch((error) => {
+                                    setInspectionPageState({
+                                      ...inspectionPageState,
+                                      serverErrors: { display: true, ...error.response.data },
+                                    });
+                                    setTimeout(
+                                      () =>
+                                        setInspectionPageState({
+                                          ...inspectionPageState,
+                                          serverErrors: { display: false },
+                                        }),
+                                      4000
+                                    );
+                                  });
+                              }}
+                            />
+                          </Menu>
+                        </Popover>
+                      </td>
                     </tr>
                   ))
                 )}
               </tbody>
             </HTMLTable>
           </Card>
+          {inspectionPageState.serverErrors.display ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Callout intent="danger" style={{ position: "fixed", top: "5px", zIndex: 10, width: "400px" }}>
+                {inspectionPageState.serverErrors.errorMsg}
+              </Callout>
+            </div>
+          ) : null}
+          {inspectionPageState.serverMessage.display ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Callout intent="success" style={{ position: "fixed", top: "5px", zIndex: 10, width: "400px" }}>
+                {inspectionPageState.serverMessage.message}
+              </Callout>
+            </div>
+          ) : null}
         </MainDiv>
       )}
     </Layout>
