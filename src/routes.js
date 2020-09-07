@@ -8,7 +8,7 @@ import Dashboard from "./pages/Dashboard/dashboard";
 import { Router, BrowserRouter } from "react-router-dom";
 import history from "./history";
 import Inspections from "./pages/inspections";
-import NewInspection from "./pages/new-inspection/newInspection";
+import NewInspection from "./pages/newInspection";
 import Inspection from "./pages/inspection";
 
 //TODO: Implement a 404 Page
