@@ -60,8 +60,9 @@ const AddUser = () => {
       <MainDiv>
         <BodyText style={{ color: "white", textAlign: "center" }}>Register User</BodyText>
         <Card className={`form-jumbo`}>
-          <Title>Add New User</Title>
-          <hr />
+          <h1 className="bp3-heading" style={{ marginBottom: "20px", color: "#05B2DC" }}>
+            Add New User
+          </h1>
           <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
             {({ values, handleSubmit, errors, touched, isSubmitting, dirty, handleChange }) => (
               <Form onSubmit={handleSubmit}>
@@ -78,7 +79,7 @@ const AddUser = () => {
                 <Row>
                   <Col>
                     <Form.Group controlId="first_name">
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel className="bp3-text-muted">First Name</FormLabel>
                       <Field type="input" name="first_name" placeholder="Enter First Name" as={Form.Control} />
                       {errors.first_name !== undefined && errors.first_name !== "" && touched.first_name ? (
                         <Callout style={errorStyling} intent="warning">
