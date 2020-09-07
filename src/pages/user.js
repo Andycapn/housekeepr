@@ -65,7 +65,7 @@ function Dashboard() {
           <section className="main-app-section">
             <MainDiv>
               <Card>
-                <h1>Details</h1>
+                <h2 className="bp3-heading">Details</h2>
                 <hr />
                 {state.privilege === "standard" ? (
                   <Callout intent="warning" style={{ marginBottom: "20px" }}>
@@ -126,9 +126,8 @@ function Dashboard() {
                 </Formik>
               </Card>
               <Card>
-                <h1>Password</h1>
+                <h2 className="bp3-heading">Password</h2>
                 <hr />
-
                 <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
                   {({ values, handleChange, handleBlur, handleSubmit, errors, touched, dirty }) => (
                     <Form>
