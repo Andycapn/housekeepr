@@ -12,17 +12,17 @@ const MainDiv = styled.main`
   @media screen and (min-width: 600px) {
     padding: 0.5rem calc((100vw - 580px) / 2);
   }
-  @media screen and (min-width: 768px) {
-    padding: 0.5rem calc((100vw - 750px) / 2);
+  @media screen and (min-width: 800px) {
+    padding: 0.5rem calc((100vw - 900px) / 2);
   }
-  @media screen and (min-width: 1024px) {
-    padding: 0.5rem calc((100vw - 960px) / 2);
+  @media screen and (min-width: 1200px) {
+    padding: 2rem calc((100vw - 1200px) / 2);
   }
   @media screen and (min-width: 1366px) {
     padding: 2.2rem calc((100vw - 1280px) / 2);
   }
   @media screen and (min-width: 1440px) {
-    padding: 2rem calc((100vw - 1300px) / 2);
+    padding: 2rem calc((100vw - 1440px) / 2);
   }
 `;
 
