@@ -9,6 +9,7 @@ import { Router, BrowserRouter } from "react-router-dom";
 import history from "./history";
 import Inspections from "./pages/inspections";
 import NewInspection from "./pages/new-inspection/newInspection";
+import Inspection from "./pages/inspection";
 
 //TODO: Implement a 404 Page
 //TODO: Implement a Home Page
@@ -33,6 +34,9 @@ const Routes = () => {
           </ProtectedRoute>
           <ProtectedRoute exact path="/newInspection">
             <NewInspection />
+          </ProtectedRoute>
+          <ProtectedRoute exact path="/inspection/:id">
+            <Inspection />
           </ProtectedRoute>
         </Switch>
       </BrowserRouter>
