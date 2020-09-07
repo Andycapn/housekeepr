@@ -13,6 +13,7 @@ import { Formik, FieldArray, Form } from "formik";
 import { validationSchema } from "../../components/NewInspectionValidation";
 import { Prompt } from "react-router-dom";
 import { useHistory } from "react-router";
+import { FormControl } from "react-bootstrap";
 
 const FormLabel = styled(Label)`
   font-size: 16px;
@@ -27,12 +28,20 @@ const spinnerStyling = css`
 const NewInspection = () => {
   const [cookies, setCookies] = useCookies(["housekeepr"]);
   const token = cookies.housekeepr;
-  const [pageState, setPageState] = useState({ questions: [], loading: true, saved: false, step: 1 });
+  const [pageState, setPageState] = useState({
+    questions: [],
+    loading: true,
+    saved: false,
+    submitting: false,
+    step: 1,
+  });
   const { state } = useContext(Context);
   const currentDate = new Date();
   let history = useHistory();
+  const date = `${currentDate.getDate()}/${currentDate.getMonth()}/${currentDate.getFullYear()}`;
 
   useEffect(() => {
+    // Fetch Checklist Questions from the database.
     axios
       .get("http://localhost:3000/inspections/getQuestions", { headers: { Authorization: `${token}` } })
       .then((response) => {
@@ -54,38 +63,68 @@ const NewInspection = () => {
     );
   }
 
+  //Initial State for form
   const answers = pageState.questions.map((q, index) => {
-    return { id: q.id, question: q.question, answer: "" };
+    return { id: q.id, question: q.question, category: q.category, answer: "" };
   });
 
+  // Spread each unique category into an array
   const categories = [
     ...new Set(
       pageState.questions.map((q) => {
         return q.category;
       })
     ),
-  ];
+  ]
+    .sort()
+    .reverse();
+
+  // URI Encode data
+  const encode = (data) => {
+    return Object.keys(data)
+      .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+      .join("&");
+  };
+
+  // Submission Handler
+  const handleSubmit = async (data) => {
+    setPageState({ ...pageState, submitting: true });
+    console.log(data);
+    axios
+      .post(
+        "http://localhost:3000/inspections/postInspection",
+        encode({
+          inspectionData: JSON.stringify(data),
+        }),
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded", Authorization: cookies.housekeepr },
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          setPageState({ ...pageState, saved: true, submitting: false });
+          setTimeout(() => history.push("/dashboard"), 2000);
+        }
+      });
+  };
 
   return (
     <>
       <Layout>
         <MainDiv>
           <Card>
-            <h1>New Inspection</h1>
+            <h1 className="bp3-heading" style={{ color: "#05B2DC" }}>
+              New Inspection
+            </h1>
             <hr />
-            <PartOne currentStep={1} state={state} />
             <Formik
               initialValues={{
                 inspectedBy: state.id,
-                date: `${currentDate.getDate()}/${currentDate.getMonth()}/${currentDate.getFullYear()}`,
+                date: `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`,
                 roomName: "",
                 answers,
               }}
-              onSubmit={(data) => {
-                console.log(data);
-                setPageState({ ...pageState, saved: true });
-                history.push("/dashboard");
-              }}
+              onSubmit={handleSubmit}
               validationSchema={validationSchema}
             >
               {({ values, handleChange, errors, dirty }) => (
@@ -94,12 +133,32 @@ const NewInspection = () => {
                     message="You have unsaved changes, are you sure you want to leave this page?"
                     when={dirty && !pageState.saved}
                   />
+                  <FormGroup>
+                    <FormLabel>Inspected By</FormLabel>
+                    <FormControl type="input" value={state.first_name} disabled />
+                  </FormGroup>
+                  <FormGroup>
+                    <FormLabel>Date</FormLabel>
+                    <FormControl type="text" value={date} disabled />
+                  </FormGroup>
+                  <FormGroup>
+                    <FormLabel>Room</FormLabel>
+                    <FormControl as="select" defaultValue="default" onChange={handleChange} name="roomName">
+                      <option value="default" disabled>
+                        -- Please Select An Answer --
+                      </option>
+                      <option value="Chisunka">Chisunka</option>
+                    </FormControl>
+                  </FormGroup>
                   {categories.map((category, index) => (
                     <>
-                      <Card style={{ margin: "10px 0" }}>
-                        <Callout intent="primary" icon="">
-                          <h5 className="bp3-heading">{category}</h5>
+                      <Card style={{ margin: "10px 0" }} elevation="1">
+                        <Callout style={{ backgroundColor: "#05B2DC" }} icon={null}>
+                          <h3 style={{ color: "white" }} className="bp3-heading">
+                            {category}
+                          </h3>
                         </Callout>
+                        <hr />
                         <FieldArray name="answers">
                           {() => (
                             <div>
@@ -107,9 +166,10 @@ const NewInspection = () => {
                                 if (category === pageState.questions[index].category) {
                                   return (
                                     <>
-                                      <hr />
                                       <FormGroup key={question.id} intent="success">
-                                        <FormLabel>{`${question.question} `}</FormLabel>
+                                        <FormLabel
+                                          style={{ fontWeight: "500", marginBottom: "20px" }}
+                                        >{`${question.question} `}</FormLabel>
                                         <HTMLSelect
                                           name={`answers[${index}].answer`}
                                           onChange={handleChange}
@@ -118,8 +178,17 @@ const NewInspection = () => {
                                           <option value="default" disabled>
                                             -- Please Select an Answer --
                                           </option>
-                                          <option value="Satisfactory">Satisfactory</option>
-                                          <option value="Unsatisfactory">Unsatisfactory</option>
+                                          {pageState.questions[index].category === categories[1] ? (
+                                            <>
+                                              <option value="Yes">Yes</option>
+                                              <option value="No">No</option>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <option value="Satisfactory">Satisfactory</option>
+                                              <option value="Unsatisfactory">Unsatisfactory</option>
+                                            </>
+                                          )}
                                         </HTMLSelect>
                                       </FormGroup>
                                       <hr />
@@ -135,8 +204,19 @@ const NewInspection = () => {
                       </Card>
                     </>
                   ))}
-                  <pre>{JSON.stringify(values)}</pre>
-                  <Button type="submit" intent="primary" minimal outlined rightIcon="tick">
+                  {pageState.saved ? (
+                    <Callout intent="success" style={{ marginBottom: "10px" }}>
+                      <h6 className="bp3-heading">Inspection Saved, You will Be Redirected Soon</h6>
+                    </Callout>
+                  ) : null}
+                  <Button
+                    type="submit"
+                    intent="primary"
+                    minimal
+                    outlined
+                    rightIcon="tick"
+                    loading={pageState.submitting}
+                  >
                     Complete Inspection
                   </Button>
                 </Form>
