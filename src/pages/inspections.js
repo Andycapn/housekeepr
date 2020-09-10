@@ -65,103 +65,117 @@ const Inspections = () => {
               Inspections
             </h1>
             <hr />
-            <HTMLTable style={{ width: "100%" }} bordered>
-              <thead>
-                <tr>
-                  <th>Inspected By</th>
-                  <th>Conducted On</th>
-                  <th>Room Name</th>
-                </tr>
-              </thead>
-              <tbody>
-                {!inspectionPageState.inspections ? (
-                  <h3 style={{ textAlign: "center" }}>No Inspections Yet</h3>
-                ) : (
-                  inspectionPageState.inspections.reverse().map((element, index) => (
-                    <tr key={index}>
-                      <td>
-                        {`${inspectionPageState.inspections[index].first_name}
+            {!inspectionPageState.inspections ? (
+              <>
+                <div style={{ textAlign: "center" }}>
+                  <h2 className="bp3-heading mb-4">No Inspections Yet</h2>
+                  <Button
+                    target="_parent"
+                    intent="primary"
+                    icon="clipboard"
+                    onClick={() => history.push("/newInspection")}
+                  >
+                    Conduct Your First Inspection
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <HTMLTable style={{ width: "100%" }} bordered>
+                <thead>
+                  <tr>
+                    <th>Inspected By</th>
+                    <th>Conducted On</th>
+                    <th>Room Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {inspectionPageState.inspections
+                    .map((element, index) => (
+                      <tr key={index}>
+                        <td>
+                          {`${inspectionPageState.inspections[index].first_name}
                         ${inspectionPageState.inspections[index].last_name}`}
-                      </td>
-                      <td>{inspectionPageState.inspections[index].date}</td>
-                      <td>{inspectionPageState.inspections[index].room_name}</td>
-                      <td>
-                        <Button
-                          onClick={() => {
-                            history.push(`/inspection/${inspectionPageState.inspections[index].inspection_id}`);
-                          }}
-                          minimal
-                          intent="primary"
-                          fill
-                          icon="document-open"
-                        >
-                          View Inspection
-                        </Button>
-                      </td>
-                      <td>
-                        <Popover fill>
-                          <Button intent="danger" minimal icon="cross" fill>
-                            Delete
+                        </td>
+                        <td>{inspectionPageState.inspections[index].date}</td>
+                        <td>{inspectionPageState.inspections[index].room_name}</td>
+                        <td>
+                          <Button
+                            onClick={() => {
+                              history.push(`/inspection/${inspectionPageState.inspections[index].inspection_id}`);
+                            }}
+                            minimal
+                            intent="primary"
+                            fill
+                            icon="document-open"
+                          >
+                            View Inspection
                           </Button>
-                          <Menu>
-                            <p className="bp3-menu-header">
-                              Are you sure you want to delete this inspection? This action is irreversible.
-                            </p>
-                            <Menu.Divider />
-                            <Menu.Item intent="primary" text="Cancel" />
-                            <Menu.Item
-                              intent="Danger"
-                              text={"Yes"}
-                              onClick={(e) => {
-                                const id = inspectionPageState.inspections[index].inspection_id;
-                                console.log(id);
-                                axios
-                                  .delete("http://localhost:3000/inspections/deleteInspection", {
-                                    headers: {
-                                      authorization: cookies.housekeepr,
-                                      inspection_id: id,
-                                    },
-                                  })
-                                  .then((response) => {
-                                    console.log(response.data);
-                                    setInspectionPageState({
-                                      ...inspectionPageState,
-                                      serverMessage: { display: true, ...response.data },
-                                    });
-                                    setTimeout(() => {
+                        </td>
+                        <td>
+                          <Popover fill>
+                            <Button intent="danger" minimal icon="cross" fill>
+                              Delete
+                            </Button>
+                            <Menu>
+                              <p className="bp3-menu-header">
+                                Are you sure you want to delete this inspection? This action is irreversible.
+                              </p>
+                              <Menu.Divider />
+                              <Menu.Item intent="primary" text="Cancel" />
+                              <Menu.Item
+                                intent="Danger"
+                                text={"Yes"}
+                                onClick={(e) => {
+                                  const id = inspectionPageState.inspections[index].inspection_id;
+                                  console.log(id);
+                                  axios
+                                    .delete("http://localhost:3000/inspections/deleteInspection", {
+                                      headers: {
+                                        authorization: cookies.housekeepr,
+                                        inspection_id: id,
+                                      },
+                                    })
+                                    .then((response) => {
+                                      console.log(response.data);
                                       setInspectionPageState({
                                         ...inspectionPageState,
-                                        serverMessage: { display: false },
+                                        serverMessage: { display: true, ...response.data },
                                       });
-                                    }, 2000);
-                                    if (response.status === 200) {
-                                      inspectionPageState.inspections.splice(index, 1);
-                                    }
-                                  })
-                                  .catch((error) => {
-                                    setInspectionPageState({
-                                      ...inspectionPageState,
-                                      serverErrors: { display: true, ...error.response.data },
-                                    });
-                                    setTimeout(
-                                      () =>
+                                      setTimeout(() => {
                                         setInspectionPageState({
                                           ...inspectionPageState,
-                                          serverErrors: { display: false },
-                                        }),
-                                      4000
-                                    );
-                                  });
-                              }}
-                            />
-                          </Menu>
-                        </Popover>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </HTMLTable>
+                                          serverMessage: { display: false },
+                                        });
+                                      }, 2000);
+                                      if (response.status === 200) {
+                                        inspectionPageState.inspections.splice(index, 1);
+                                      }
+                                    })
+                                    .catch((error) => {
+                                      setInspectionPageState({
+                                        ...inspectionPageState,
+                                        serverErrors: { display: true, ...error.response.data },
+                                      });
+                                      setTimeout(
+                                        () =>
+                                          setInspectionPageState({
+                                            ...inspectionPageState,
+                                            serverErrors: { display: false },
+                                          }),
+                                        4000
+                                      );
+                                    });
+                                }}
+                              />
+                            </Menu>
+                          </Popover>
+                        </td>
+                      </tr>
+                    ))
+                    .reverse()}
+                </tbody>
+              </HTMLTable>
+            )}
           </Card>
           {inspectionPageState.serverErrors.display ? (
             <div style={{ display: "flex", justifyContent: "center" }}>
