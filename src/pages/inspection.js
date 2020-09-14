@@ -7,7 +7,7 @@ import { useCookies } from "react-cookie";
 import { ClipLoader } from "react-spinners";
 import { css } from "@emotion/core";
 import { useHistory } from "react-router";
-import { Callout, Card } from "@blueprintjs/core";
+import { Callout, Card, Button } from "@blueprintjs/core";
 
 const spinnerStyling = css`
   margin: 25% auto;
@@ -61,6 +61,11 @@ const Inspection = () => {
     .sort()
     .reverse();
 
+  //Report Download Handler
+  const handleDownload = (e) => {
+    axios.get();
+  };
+
   return (
     <Layout>
       <MainDiv>
@@ -75,17 +80,19 @@ const Inspection = () => {
             </h2>
           </div>
           <hr />
-          <span style={{ display: "flex" }}>
-            <p className="bp3-ui-text">
+          <span style={{ display: "flex", alignItems: "center" }}>
+            <p className="bp3-ui-text" style={{ margin: "0 0px" }}>
               Inspected By:{" "}
               <span style={{ color: "#05B2DC" }}>{`${inspectionState.first_name} ${inspectionState.last_name}`} </span>
             </p>
-            <p className="bp3-ui-text" style={{ margin: "0 10px" }}>
+            <p className="bp3-ui-text" style={{ margin: "0 10px", flexGrow: "1" }}>
               Inspected On:{" "}
               <span style={{ color: "#05B2DC" }}>{inspectionState.date.replace("T22:00:00.000Z", "")}</span>
             </p>
+            <Button intent="primary" rightIcon="download" minimal onClick={handleDownload}>
+              Save Report
+            </Button>
           </span>
-
           {categories.map((category) => {
             return (
               <Card style={{ margin: "10px 0" }} key={category}>
